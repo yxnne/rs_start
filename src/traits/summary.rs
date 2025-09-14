@@ -3,3 +3,9 @@ pub trait Summary {
 }
 
 
+// 作为参数
+pub fn notify(item: &impl Summary) {
+  println!("Breaking news! {}", item.summarize());
+}
+
+
