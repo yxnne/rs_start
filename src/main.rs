@@ -2,7 +2,9 @@ mod front_of_house;
 mod rect;
 mod collection;
 mod err;
+mod traits;
 
+use crate::traits::summary::Summary;  // 编译器说“method not found”，并不是 summarize 没写，而是 它不知道 SocialPost 实现了 Summary —— 也就是 trait 的作用域没引进来。
 use crate::front_of_house::hosting;
 use rect::Rectangle;
 use collection::vec;
@@ -10,6 +12,7 @@ use collection::str;
 use collection::map;
 use err::panic_learn;
 use err::res;
+use traits::post;
 
 
 
@@ -50,5 +53,18 @@ fn main() {
 
     map::try_map_item_statistic();
 
-    res::simple_expect_read_test_txt();
+    // res::simple_expect_read_test_txt();
+
+
+    println!("trait try start -----");
+    let post = post::SocialPost {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        repost: false,
+    };
+
+    println!("1 new post: {}", post.summarize());
 }

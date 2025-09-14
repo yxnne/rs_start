@@ -1,0 +1,63 @@
+一句话顺序：**先 `mod` → 再 `use` → 不用 `crate::` 就写相对路径**。
+
+把 Rust 当成“文件夹”看：
+
+1. `mod xxx;`  
+   告诉编译器“这里有个叫 xxx 的模块（文件或文件夹）”，**只做一次声明**，相当于把文件拉进项目。
+
+2. `use ...;`  
+   只是“建快捷方式”，让你后面少打字。  
+   路径有两种写法：
+   - 绝对路径：`crate::模块::子模块::东西`  
+   - 相对路径：从当前模块出发，`self::`（当前）、`super::`（上级）或直接写名字。
+
+3. 例子对照你的代码：
+
+   文件树（只看关键）：
+   ```
+   src
+   ├── main.rs
+   └── traits
+       ├── mod.rs
+       └── post.rs
+   ```
+
+   步骤：
+   - 在 main.rs 写一次 `mod traits;` → 把 traits 这个“文件夹”拉进来。
+   -  traits/mod.rs 里写 `pub mod post;` → 把 post.rs 拉进来。
+   -  现在 `traits::post::SocialPost` 已经存在；想少打字，就在 main.rs 里 `use traits::post::SocialPost;` → 后面直接写 `SocialPost` 即可。
+
+   同理，trait 也要 `use` 进作用域才能调到方法：
+   ```rust
+   use traits::Summary;   // 别忘了它
+   ```
+
+记住：  
+“拉文件进门” → `mod`；  
+“建别名省事” → `use`；  
+路径要么 `crate::` 开头，要么从当前模块开始写。
+
+
+
+你可以**不写**那行重导出 —— 这不是语法必须，只是“图方便”。
+
+- 只写  
+  ```rust
+  pub mod summary;
+  ```
+  外面就要用  
+  ```rust
+  use traits::summary::Summary;
+  ```
+
+- 额外写  
+  ```rust
+  pub use summary::Summary;
+  ```
+  外面就可以省一层，直接  
+  ```rust
+  use traits::Summary;
+  ```
+
+重导出（`pub use`）是**捷径**，不是麻烦，是让你决定对外暴露的“门面”层级。  
+觉得多余就删掉，多打一次 `::summary` 而已。
