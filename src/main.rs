@@ -1,4 +1,3 @@
-
 mod front_of_house;
 mod rect;
 mod collection;
@@ -85,6 +84,25 @@ fn main() {
     );
 
     println!("The longest string is: {}", longest);
+
+
+    // 闭包
+    let mut rects = [
+        Rectangle::new(100, 50),
+        Rectangle::new(2, 500),
+        Rectangle::new(10, 500),
+    ];
+    
+    rects.sort_by_key(|r| r.area());
+
+    println!("rects {:?}", rects);
+
+
+    let v1: Vec<i32> = vec![1, 2, 3];
+
+    let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2, 3, 4]);
 
 }
 
