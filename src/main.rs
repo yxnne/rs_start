@@ -3,6 +3,9 @@ mod rect;
 mod collection;
 mod err;
 mod traits;
+mod smart_pointer;
+mod muti_thread;
+mod match_mod;
 
 use std::fmt::Display;
 
@@ -16,8 +19,23 @@ use collection::map;
 use err::panic_learn;
 use err::res;
 use traits::post;
+use smart_pointer::learn_box;
+use smart_pointer::learn_box::List::{Cons, Nil};
+use muti_thread::learn_thread;
+use muti_thread::learn_co;
+use match_mod::learn_match;
 
 
+
+static mut COUNTER: u32 = 0;
+
+/// SAFETY: 同时在多个线程调用这个方法是未定义的行为，所以你*必须*保证同一时间只
+/// 有一个线程在调用它。
+unsafe fn add_to_count(inc: u32) {
+    unsafe {
+        COUNTER += inc;
+    }
+}
 
 fn main() {
     println!("Hello, world!");
@@ -104,6 +122,41 @@ fn main() {
 
     assert_eq!(v2, vec![2, 3, 4]);
 
+
+    println!("learn box start -----");
+
+    learn_box::try_box();
+
+    let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+
+    println!("list: {:?}", list);
+
+    println!("learn thread start -----");
+
+    learn_thread::try_thread();
+
+    learn_thread::try_move();
+
+    learn_thread::try_mutex();
+
+    // learn_co::try_co();
+
+    println!("learn match start ----- 0000");
+
+
+
+    learn_match::try_match1();
+
+    learn_match::try_match2();
+
+    
+    
+
+    unsafe {
+        // SAFETY: 它只在 `main` 这一个线程被调用。
+        add_to_count(3);
+        println!("COUNTER: {}", *(&raw const COUNTER));
+    }
 }
 
 
